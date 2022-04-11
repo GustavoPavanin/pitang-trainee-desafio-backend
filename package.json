@@ -1,0 +1,26 @@
+{
+  "name": "pitang-trainee-desafio-backend",
+  "description": "Backend da aplicação do projeto final do programa de Trainee Pitang 2022",
+  "author": "Gustavo Pavanin Martins",
+  "repository": "https://github.com/GustavoPavanin/pitang-trainee-desafio-backend.git",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "nodemon": "^2.0.15",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2"
+  },
+  "scripts": {
+    "start": "yarn add express nodemon dotenv date-fns",
+    "dev": "yarn nodemon src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3"
+  }
+}
