@@ -1,7 +1,8 @@
 import express from "express";
+import AppointmentController from "../controller/AppointmentController.js";
 
-const appointmentController = new appointmentController;
 const router = express.Router();
+const appointmentController = new AppointmentController;
 
 router.get('/api/',appointmentController.index);
 router.get('/api/notAvailable', appointmentController.notAvailable);

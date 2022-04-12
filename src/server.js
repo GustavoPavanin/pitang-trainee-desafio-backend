@@ -1,11 +1,23 @@
-import app from "./app.js";
-import dotEnv from "dotenv";
+import express from "express";
+import Router from "./router/AppointmentRouter.js";
+import AppointmentController from "./controller/AppointmentController.js";
+import detEnv from 'dotenv';
 
-dotEnv.config();
+detEnv.config();
 
-// eslint-disable-next-line no-undef
 const PORT = process.env.PORT;
+const app = express();
 
-app.listen(PORT, () =>{
-	console.log(`Server running at ${PORT}`);
+app.use(express.json());
+
+
+app.get("/", (request, response) => response.json({message: "Appointment..."}))
+
+app.use(Router);
+
+
+app.listen(PORT, () => {
+    console.log(`Server running on PORT ${PORT} ----- Aplicação Iniciada`);
 });
+
+
