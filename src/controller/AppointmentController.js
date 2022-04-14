@@ -10,6 +10,17 @@ const validationSchema = Joi.object({
     appointmentDate: Joi.string().required()
   })
 
+const businessRules = (appointmentDate, appointmentHour) => {
+    //list.find()
+    if(list.filter(list => list.appointmentDate == appointmentDate).length >= 20){
+        return false;
+    }
+    if((list.filter((list) => { return(list.appointmentDate == appointmentDate && list.appointmentHour == appointmentHour) })).length >= 2) {
+        return false;
+    }
+
+    return true;
+}
 class AppointmentController {
 
     index(request, response) { 
@@ -23,37 +34,43 @@ class AppointmentController {
         console.log("notAvailable");
         response.status(200).send({ message: "notAvailable" });
     }
+    
     store(request, response) { 
         try{
-            const {name, email, birthdate, appointmentDate} = request.body
-            const id = crypto.randomUUID();
             const validation = validationSchema.validate(request.body, {abortEarly: false});
-
             if (validation.error) {
                 return response.status(400).json(validation.error.details);
             }
-
+            const {name, email} = request.body
+            const id = crypto.randomUUID();
+            const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
+            const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
             const appointmentHour = format(new Date(request.body.appointmentDate), 'HH:mm');
 
+            if(businessRules(appointmentDate, appointmentHour)){
+                list.push(
+                    {
+                        id, 
+                        name, 
+                        email, 
+                        birthdate, 
+                        appointmentDate, 
+                        appointmentHour,
+                        status: false,
+                        conclusion: ""
+                    });
+    
+                return response.status(201).send({ message: `Agendamento incluido com sucesso` });
+            }
 
-
-            list.push(
-                {
-                    id, 
-                    name, 
-                    email, 
-                    birthdate: format(new Date(birthdate), 'MM/dd/yyyy'), 
-                    appointmentDate: format(new Date(appointmentDate), 'MM/dd/yyyy'), 
-                    appointmentHour
-                });
-
-            return response.status(201).send({ message: `Agendamento incluido com sucesso` });
+            return response.status(401).json({ message: 'Voce nao pode fazer esse agendamento' });
 
         }catch{
             return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
         }
+
         
-        
+
     }
     update(request, response) { 
         console.log("update");
