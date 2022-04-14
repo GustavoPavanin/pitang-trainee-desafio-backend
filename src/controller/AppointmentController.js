@@ -1,5 +1,5 @@
 import list from "../model/AppointmentModel.js";
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 import crypto from 'crypto';
 import Joi from "joi";
 
@@ -21,6 +21,19 @@ const businessRules = (appointmentDate, appointmentHour) => {
 
     return true;
 }
+
+const dataSort = () => {
+    list.sort((a, b) => {
+        if(a.appointmentDate < b.appointmentDate) return -1;
+        if(a.appointmentDate > b.appointmentDate) return 1;
+        if(a.appointmentDate = b.appointmentDate) {
+            if(a.appointmentHour < b.appointmentHour) return -1;
+            if(a.appointmentHour > b.appointmentHour) return 1;
+            if(a.appointmentHour = b.appointmentHour) return 0;
+        }
+    });
+}
+
 class AppointmentController {
 
     index(request, response) { 
@@ -34,7 +47,7 @@ class AppointmentController {
         console.log("notAvailable");
         response.status(200).send({ message: "notAvailable" });
     }
-    
+
     store(request, response) { 
         try{
             const validation = validationSchema.validate(request.body, {abortEarly: false});
@@ -45,7 +58,7 @@ class AppointmentController {
             const id = crypto.randomUUID();
             const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
             const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
-            const appointmentHour = format(new Date(request.body.appointmentDate), 'HH:mm');
+            const appointmentHour = format(new Date(request.body.appointmentDate.replace("Z","")), 'HH:mm');
 
             if(businessRules(appointmentDate, appointmentHour)){
                 list.push(
@@ -59,7 +72,9 @@ class AppointmentController {
                         status: false,
                         conclusion: ""
                     });
-    
+
+                dataSort(appointmentDate, appointmentHour);
+
                 return response.status(201).send({ message: `Agendamento incluido com sucesso` });
             }
 
