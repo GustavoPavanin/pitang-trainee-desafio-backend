@@ -3,18 +3,11 @@ import { format } from 'date-fns';
 import crypto from 'crypto';
 import Joi from "joi";
 
-const schema = Joi.object({ 
+const validationSchema = Joi.object({ 
     name: Joi.string().required(), 
-    email: Joi.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(), 
-    birthdate: Joi.date().required().max(new Date()), 
-    appointmentDate: Joi.date().required(), 
-    appointmentHour,
-    languages: Joi.array().items(Joi.string()),
-    director: Joi.string().required().min(3).max(50),
-    rating: Joi.number().max(10),
-    duration: Joi.number().integer().positive().max(500),
-    thumbnail: Joi.string().allow(''),
-    description: Joi.string().required().max(10000)
+    email: Joi.string().email({ tlds: { allow: false } }).required(), 
+    birthdate: Joi.string().required(), 
+    appointmentDate: Joi.string().required()
   })
 
 class AppointmentController {
@@ -31,21 +24,30 @@ class AppointmentController {
         response.status(200).send({ message: "notAvailable" });
     }
     store(request, response) { 
-        /*{
-        "name": "Gustavo Pavanin Martins",
-        "email": "gustavo_pavanin@hotmail.com",
-        "birthdate": "2022-03-16T23:08:38.000Z",
-        "appointmentDate": "2022-04-23T23:30:00.000Z"
-        }*/
         try{
-            const {name, email} = request.body
+            const {name, email, birthdate, appointmentDate} = request.body
             const id = crypto.randomUUID();
-            const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
-            const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
-            const appointmentHour = format(new Date(request.body.appointmentDate), 'HH:mm');
-            list.push({id, name, email, birthdate, appointmentDate, appointmentHour});
+            const validation = validationSchema.validate(request.body, {abortEarly: false});
 
-            return response.status(201).send({ message: `Agendamento incruido com sucesso` });
+            if (validation.error) {
+                return response.status(400).json(validation.error.details);
+            }
+
+            const appointmentHour = format(new Date(request.body.appointmentDate), 'HH:mm');
+
+
+
+            list.push(
+                {
+                    id, 
+                    name, 
+                    email, 
+                    birthdate: format(new Date(birthdate), 'MM/dd/yyyy'), 
+                    appointmentDate: format(new Date(appointmentDate), 'MM/dd/yyyy'), 
+                    appointmentHour
+                });
+
+            return response.status(201).send({ message: `Agendamento incluido com sucesso` });
 
         }catch{
             return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
