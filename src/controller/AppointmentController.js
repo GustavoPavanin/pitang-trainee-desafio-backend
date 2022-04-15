@@ -46,7 +46,7 @@ class AppointmentController {
 
     notAvailable(request, response) { 
         const notAvailableDateList = list.filter((data, index, list) => {
-                if(list.filter(list => data.appointmentDate == list.appointmentDate).length >= 2){
+                if(list.filter(list => data.appointmentDate == list.appointmentDate).length >= 20){
                     return true;
                 }
                 return false;
