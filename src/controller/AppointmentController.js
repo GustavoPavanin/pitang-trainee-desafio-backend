@@ -43,9 +43,27 @@ class AppointmentController {
         return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
         }
     }
+
     notAvailable(request, response) { 
-        console.log("notAvailable");
-        response.status(200).send({ message: "notAvailable" });
+        const notAvailableDateList = list.filter((data, index, list) => {
+                if(list.filter(list => data.appointmentDate == list.appointmentDate).length >= 20){
+                    return true;
+                }
+                return false;
+            });
+        const notAvailableDates = [];
+
+        notAvailableDateList.forEach((objDate) => {
+            let duplicated  = notAvailableDates.findIndex(date => {
+                return new Date(objDate.appointmentDate).getTime() === date.getTime();
+            }) > -1;
+        
+            if(!duplicated) {
+                notAvailableDates.push(new Date(objDate.appointmentDate));
+            }
+        });
+
+        response.status(200).send({ notAvailableDates });
     }
 
     store(request, response) { 
@@ -87,6 +105,7 @@ class AppointmentController {
         
 
     }
+
     update(request, response) { 
         console.log("update");
         response.status(200).send({ message: "update" });
