@@ -10,6 +10,8 @@ const validationSchema = Joi.object({
     appointmentDate: Joi.string().required()
   })
 
+const putValidationSchema = Joi.object({ comment: Joi.string()});
+
 const businessRules = (appointmentDate, appointmentHour) => {
     //list.find()
     if(list.filter(list => list.appointmentDate == appointmentDate).length >= 20){
@@ -102,13 +104,25 @@ class AppointmentController {
             return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
         }
 
-        
-
     }
 
     update(request, response) { 
-        console.log("update");
-        response.status(200).send({ message: "update" });
+        const { id } =request.params;
+        const { comment } = request.body
+        const position = list.findIndex(object => { return object.id === id;});
+        const validation = putValidationSchema.validate(request.body, {abortEarly: false});
+            if (validation.error) {
+                return response.status(400).json(validation.error.details);
+            }
+
+        if (position < 0) {
+            return response.status(400).send({ message: 'Agendamento não encontrado.' });
+        }
+
+        list[position].status = true;
+        list[position].conclusion = comment;
+
+        return response.status(200).send({ message: "Agendamento atualizado com sucesso" });
     }
 
 }
