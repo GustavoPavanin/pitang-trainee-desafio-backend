@@ -41,30 +41,22 @@ class AppointmentController {
         try{
             const validation = validationSchema.validate(request.body, {abortEarly: false});
             if (validation.error) {
-                return response.status(400).json(validation.error.details);
+                return response.status(400).json("Um erro inesperado aconteceu, verifique os dados enviados.");
             }
             const {name, email} = request.body
             const id = crypto.randomUUID();
             const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
             const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
-            const appointmentHour = format(new Date(request.body.appointmentDate.replace("Z","")), 'HH:mm');
+            const appointmentHour = format(new Date(request.body.appointmentHour), 'HH:mm');
+
+            const data =  {id, name, email, birthdate, appointmentDate, appointmentHour, status: false, conclusion: ""}
 
             if(businessRules(appointmentDate, appointmentHour)){
-                list.push(
-                    {
-                        id, 
-                        name, 
-                        email, 
-                        birthdate, 
-                        appointmentDate, 
-                        appointmentHour,
-                        status: false,
-                        conclusion: ""
-                    });
+                list.push( data );
 
                 dataSort(appointmentDate, appointmentHour);
 
-                return response.status(201).send({ message: `Agendamento incluido com sucesso` });
+                return response.status(201).send({ message: `Agendamento incluido com sucesso`, data });
             }
 
             return response.status(401).json({ message: 'Voce nao pode fazer esse agendamento' });
