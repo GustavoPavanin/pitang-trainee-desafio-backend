@@ -1,41 +1,10 @@
 import list from "../model/AppointmentModel.js";
-import { format, formatISO } from 'date-fns';
+import { format } from 'date-fns';
 import crypto from 'crypto';
-import Joi from "joi";
-
-const validationSchema = Joi.object({ 
-    name: Joi.string().required(), 
-    email: Joi.string().email({ tlds: { allow: false } }).required(), 
-    birthdate: Joi.string().required(), 
-    appointmentDate: Joi.string().required()
-  })
-
-const putValidationSchema = Joi.object({ comment: Joi.string()});
-
-const businessRules = (appointmentDate, appointmentHour) => {
-    //list.find()
-    if(list.filter(list => list.appointmentDate == appointmentDate).length >= 20){
-        return false;
-    }
-    if((list.filter((list) => { return(list.appointmentDate == appointmentDate && list.appointmentHour == appointmentHour) })).length >= 2) {
-        return false;
-    }
-
-    return true;
-}
-
-const dataSort = () => {
-    list.sort((a, b) => {
-        if(a.appointmentDate < b.appointmentDate) return -1;
-        if(a.appointmentDate > b.appointmentDate) return 1;
-        if(a.appointmentDate = b.appointmentDate) {
-            if(a.appointmentHour < b.appointmentHour) return -1;
-            if(a.appointmentHour > b.appointmentHour) return 1;
-            if(a.appointmentHour = b.appointmentHour) return 0;
-        }
-    });
-}
-
+import validationSchema from "../validation/postValidationSchema.js";
+import putValidationSchema from "../validation/putValidationSchema.js";
+import businessRules from "../validation/businessRules.js";
+import dataSort from "../validation/dataSort.js";
 class AppointmentController {
 
     index(request, response) { 
