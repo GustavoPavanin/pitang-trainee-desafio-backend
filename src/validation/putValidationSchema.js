@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const putValidationSchema = Joi.object(
     { 
-        comment: Joi.string()
+        comment: [Joi.string().optional(), Joi.allow(null)]
     }
 );
 
