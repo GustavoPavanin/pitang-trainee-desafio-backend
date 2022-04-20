@@ -73,7 +73,7 @@ class AppointmentController {
         const position = list.findIndex(object => { return object.id === id;});
         const validation = putValidationSchema.validate(request.body, {abortEarly: false});
             if (validation.error) {
-                return response.status(400).json(validation.error.details);
+                return response.status(400).json({ message: validation.error.details});
             }
 
         if (position < 0) {
@@ -81,7 +81,7 @@ class AppointmentController {
         }
 
         list[position].status = true;
-        list[position].conclusion = comment;
+        list[position].conclusion = comment ? comment : "Vacinação Concluída";
 
         return response.status(200).send({ message: "Agendamento atualizado com sucesso" });
     }
