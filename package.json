@@ -8,9 +8,6 @@
   "keywords": [],
   "license": "ISC",
   "type": "module",
-  "jest": {
-    "verbose": true
-  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
@@ -24,7 +21,7 @@
   },
   "scripts": {
     "start": "yarn add express nodemon dotenv date-fns",
-    "dev": "yarn nodemon src/index.js",
+    "dev": "yarn nodemon src/server.js",
     "test": "jest"
   },
   "dependencies": {

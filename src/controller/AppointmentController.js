@@ -9,9 +9,9 @@ class AppointmentController {
 
     index(request, response) { 
         try{
-        response.status(200).send({ list });
+            response.status(200).send({ list });
         }catch{
-        return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
+            return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
         }
     }
 
@@ -41,7 +41,7 @@ class AppointmentController {
         try{
             const validation = validationSchema.validate(request.body, {abortEarly: false});
             if (validation.error) {
-                return response.status(400).json("Um erro inesperado aconteceu, verifique os dados enviados.");
+                return response.status(400).json({ message: "Um erro inesperado aconteceu, verifique os dados enviados."});
             }
             const {name, email} = request.body
             const id = crypto.randomUUID();
