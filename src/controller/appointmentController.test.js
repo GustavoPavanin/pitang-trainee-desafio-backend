@@ -16,6 +16,21 @@ describe("test GET /api/", () => {
 
 });
 
+describe("test GET /api/notAvailable", () => {
+
+    test("Should return 200 and a list in your body on get appointments", async () => {
+        const appointmentList = await request(app).get("/api/notAvailable");
+        expect(appointmentList.statusCode).toBe(200);
+        expect(appointmentList.body).toHaveProperty("notAvailableDates");
+    });
+
+    test("Should return 404 on get with wrong URL", async () => {
+        const appointmentList = await request(app).get("/test/");
+        expect(appointmentList.statusCode).toBe(404);
+    });
+
+});
+
 const appointmentData = (hours) =>{
     const appointmentHour = new Date(`24 April 2022 ${(hours).toString()}:00 UTC`).toISOString()
     return{
