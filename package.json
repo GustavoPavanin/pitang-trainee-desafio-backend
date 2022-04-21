@@ -8,10 +8,9 @@
   "keywords": [],
   "license": "ISC",
   "type": "module",
-  "jest": {
-    "verbose": true
-  },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -21,8 +20,8 @@
     "supertest": "^6.2.2"
   },
   "scripts": {
-    "start": "yarn add express nodemon dotenv date-fns",
-    "dev": "yarn nodemon src/index.js",
+    "start": "node src/server.js",
+    "dev": "yarn nodemon src/server.js",
     "test": "jest"
   },
   "dependencies": {

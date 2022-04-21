@@ -9,9 +9,9 @@ class AppointmentController {
 
     index(request, response) { 
         try{
-        response.status(200).send({ list });
+            response.status(200).send({ list });
         }catch{
-        return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
+            return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
         }
     }
 
@@ -41,13 +41,13 @@ class AppointmentController {
         try{
             const validation = validationSchema.validate(request.body, {abortEarly: false});
             if (validation.error) {
-                return response.status(400).json("Um erro inesperado aconteceu, verifique os dados enviados.");
+                return response.status(400).json({ message: "Um erro inesperado aconteceu, verifique os dados enviados."});
             }
             const {name, email} = request.body
             const id = crypto.randomUUID();
             const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
             const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
-            const appointmentHour = format(new Date(request.body.appointmentHour), 'HH:mm');
+            const appointmentHour = format(new Date(request.body.appointmentHour.replace("Z", "")), 'HH:mm');
 
             const data =  {id, name, email, birthdate, appointmentDate, appointmentHour, status: false, conclusion: ""}
 
@@ -77,7 +77,7 @@ class AppointmentController {
             }
 
         if (position < 0) {
-            return response.status(400).send({ message: 'Agendamento não encontrado.' });
+            return response.status(400).send({ message: "Agendamento não encontrado." });
         }
 
         list[position].status = true;

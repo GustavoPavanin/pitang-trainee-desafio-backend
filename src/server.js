@@ -1,13 +1,10 @@
-import express from "express";
-import Router from "./router/AppointmentRouter.js";
-import cors from 'cors';
+import app from "./app.js"
+import detEnv from 'dotenv';
 
-const app = express();
+detEnv.config();
 
-app.use(express.json());
-app.use(cors());
-app.use(Router);
+const PORT = process.env.PORT || 3000;
 
-export default app;
-
-
+app.listen(PORT, () => {
+    console.log(`Server running on PORT ${PORT} ----- Aplicação Iniciada`);
+});

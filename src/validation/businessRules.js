@@ -9,10 +9,10 @@ const businessRules = (appointmentDate, appointmentHour) => {
         return false;
     }
 
-    if(list.filter(list => list.appointmentDate == appointmentDate).length >= 20){
+    if(list.filter(data => data.appointmentDate == appointmentDate).length >= 20){
         return false;
     }
-    if((list.filter((list) => { return(list.appointmentDate == appointmentDate && list.appointmentHour == appointmentHour) })).length >= 2) {
+    if((list.filter((object) => (object.appointmentDate == appointmentDate && object.appointmentHour == appointmentHour)) ).length >= 2) {
         return false;
     }
 
