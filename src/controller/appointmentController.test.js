@@ -1,5 +1,10 @@
 import request from "supertest";
 import app from "../app";
+import list from "../model/AppointmentModel.js";
+
+const resetList = () => {
+    list.length = 0;
+}
 
 describe("test GET /api/", () => {
 
@@ -44,6 +49,10 @@ const appointmentData = (hours) =>{
 
 describe("test POST /api/", () => {
 
+    beforeEach(() => {
+        resetList();
+      });
+
     const insertmany = async (repeat, sameHour) =>{
         for(let i = 0; i < repeat; i++){
             await request(app).post("/api/").send(sameHour ? appointmentData(10) : appointmentData(i));
@@ -64,7 +73,7 @@ describe("test POST /api/", () => {
     });
 
     test("Should return 401 on create more then 20 appointments for same day", async () => {
-        await insertmany(21, false);
+        await insertmany(20, false);
         const storedAppointment = await request(app).post("/api/").send(appointmentData(10));
         expect(storedAppointment.statusCode).toBe(401);
         expect(storedAppointment.body.message).toBe("Voce nao pode fazer esse agendamento");
@@ -74,6 +83,149 @@ describe("test POST /api/", () => {
         const storedAppointment = await request(app).post("/api/").send({});
         expect(storedAppointment.statusCode).toBe(400);
         expect(storedAppointment.body.message).toBe("Um erro inesperado aconteceu, verifique os dados enviados.");
+    });
+
+    test("Should return 201 on create appointment with valid data but withou email", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(201);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid email", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment without birthdate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid type birthdate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": 123,
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid birthdate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "abcd123",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment without appointmentDate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": "",
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid type appointmentDate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": 123,
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid birthdate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": "test",
+                "appointmentHour": new Date(`24 April 2022 10:00 UTC`).toISOString()
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment without appointmentHour", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": ""
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid type appointmentDate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": 123
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
+    });
+
+    test("Should return 400 on create appointment with invalid birthdate", async () => {
+        const data = {
+                "name": "Test Name",
+                "email": "mail",
+                "birthdate": "1999-09-16T12:00:00.000Z",
+                "appointmentDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+                "appointmentHour": "test"
+        }
+        const storedAppointment = await request(app).post("/api/").send(data);
+        expect(storedAppointment.statusCode).toBe(400);
+        expect(storedAppointment.body).toHaveProperty("message");
     });
 });
 

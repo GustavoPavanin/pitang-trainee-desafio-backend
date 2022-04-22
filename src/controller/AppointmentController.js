@@ -43,7 +43,7 @@ class AppointmentController {
             if (validation.error) {
                 return response.status(400).json({ message: "Um erro inesperado aconteceu, verifique os dados enviados."});
             }
-            const {name, email} = request.body
+            const {name, email = ""} = request.body
             const id = crypto.randomUUID();
             const birthdate = format(new Date(request.body.birthdate), 'MM/dd/yyyy');
             const appointmentDate = format(new Date(request.body.appointmentDate), 'MM/dd/yyyy');
@@ -62,7 +62,7 @@ class AppointmentController {
             return response.status(401).json({ message: 'Voce nao pode fazer esse agendamento' });
 
         }catch{
-            return response.status(400).json({ message: 'Um erro inesperado aconteceu' });
+            return response.status(500).json({ message: 'Um erro inesperado aconteceu' });
         }
 
     }
