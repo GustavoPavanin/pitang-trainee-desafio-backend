@@ -39,7 +39,7 @@ Subindo localmente:
 * ✅ Faz uma requisição retornando uma lista de agendamentos ordenados por ordem crescente de data e hora
 * ✅ Retorna  um array com os dados dos agendamentos atualizados ou array vazio caso não exista nenhum agendamentos
 
-> 3. Lista dias indisponíveis
+> 4. Lista dias indisponíveis
 
 * ✅ Recebe uma requisição do tipo **GET** na rota **/api/notAvailable**
 * ✅ Faz uma requisição retornando uma lista de agendamentos cuja data tenha 20 registros
