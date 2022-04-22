@@ -19,7 +19,7 @@ Subindo localmente:
 
 > 1. Criar agendamento
 * ✅ Recebe uma requisição do tipo **POST** na rota **/api/**
-* ✅ Valida dados obrigatórios **name**, **email**, **birthday**, **appointmentDate** e **appointmentHour**
+* ✅ Valida dados obrigatórios **name**, **birthday**, **appointmentDate** e **appointmentHour**
 * ✅ Valida se o campo **birthday** e **appointmentDate** é uma data válida
 * ✅ Valida se o campo **appointmentHour** hora válida
 * ✅ Valida se o dia do **appointmentDate** não possui 20 registros cadastrados
