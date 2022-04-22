@@ -12,7 +12,7 @@
 
 Subindo localmente: 
 1. Execute na raiz do projeto o comando: npm run start
-2. A aplicação estará acessível no endereço localhost:3000
+2. A aplicação estará acessível no endereço localhost:3333
 
 
 > ## :hammer: Funcionalidades do projeto
